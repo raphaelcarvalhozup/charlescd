@@ -34,7 +34,7 @@ jobs:
       - name: Gitleaks
         run: |
           GO111MODULE=on go get github.com/zricethezav/gitleaks/v7
-          gitleaks --path=. -o ./key_leak-report.html
+          gitleaks --path=. -v -o ./key_leak-report.html
           
       - name: ls
         run: |
