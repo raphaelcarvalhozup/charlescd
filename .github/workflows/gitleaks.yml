@@ -1,0 +1,48 @@
+name: Gitleaks
+
+on:
+
+  push:
+    branches: 
+      - master
+      - main
+      - develop
+      - development
+      - qa
+      
+  pull_request:
+    branches: 
+      - master
+      - main
+      - develop
+      - development
+      - qa
+
+jobs:
+  key_leak-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+          
+      - name: Gitleaks
+        run: |
+          GO111MODULE=on go get github.com/zricethezav/gitleaks/v7
+          gitleaks --path=. -o ./key_leak-report.html
+          
+      - name: ls
+        run: |
+          ls
+          
+      - name: Export Report
+        if: "${{ always() }}"
+        uses: actions/upload-artifact@v2
+        with:
+          name: key_leak-report
+          path: ./key_leak-report.html
